@@ -1,6 +1,5 @@
 <img width="1305" height="313" alt="Screenshot 2026-05-31 at 7 37 45 PM" src="https://github.com/user-attachments/assets/af4cdb96-973d-4e18-9669-ec5db8e32f8f" />
 
-
 # 🧹 Mac Storage Cleanup — Complete Guide
 ### Free Up Gigabytes in Minutes | No Extra App Needed
 
@@ -220,16 +219,96 @@ rm -rf ~/Library/Containers/com.utmapp.UTM
 
 ---
 
-### 🔴 Delete a Vlog / Video App Container
+### 🔴 VN Video Editor / Vlog App (Smart Cleanup)
 
-**What it is:** Some video apps (like Vlog by Front Row) cache enormous amounts of video data.  
+**What it is:** VN Video Editor (by Frontrow) stores project files, downloaded assets, exported videos, and cache inside its container — often ballooning to 4–10 GB without you noticing.
+
 **Typical space saved:** 1–20 GB
+
+---
+
+#### BEFORE you delete — check which app owns this folder
+
+Run either of these to confirm it's VN on your Mac:
+
+```bash
+mdfind "kMDItemCFBundleIdentifier == 'maccatalyst.com.frontrow.vlog'"
+```
+
+or
+
+```bash
+ls ~/Applications /Applications | grep -i "vn\|vlog"
+```
+
+If VN Video Editor appears in the result — that's the app. Proceed below.
+
+---
+
+#### OPTION A — Inspect first, delete only what's large (Safest ✅)
+
+Don't delete blindly. Run this first to see exactly which subfolder is eating the space:
+
+```bash
+du -hxd2 ~/Library/Containers/maccatalyst.com.frontrow.vlog | sort -hr | head -30
+```
+
+**What you'll see:**
+
+```
+4.5G    .../maccatalyst.com.frontrow.vlog
+3.8G    .../maccatalyst.com.frontrow.vlog/Data/Library/Caches
+400M    .../maccatalyst.com.frontrow.vlog/Data/Library/Application Support
+200M    .../maccatalyst.com.frontrow.vlog/Data/Documents
+```
+
+The biggest line tells you what to target. In most cases it's the **Caches** folder — delete only that:
+
+```bash
+rm -rf ~/Library/Containers/maccatalyst.com.frontrow.vlog/Data/Library/Caches/*
+```
+
+✅ This clears cache only — your VN projects and settings stay intact.
+
+---
+
+#### OPTION B — Wipe entire app container (Login required again)
+
+If you don't care about saved projects or settings inside VN:
 
 ```bash
 rm -rf ~/Library/Containers/maccatalyst.com.frontrow.vlog
 ```
 
-🔴 **After this:** App data is wiped. Log back in if needed.
+🔴 **After this:** VN still works — but all local project data, settings, and cache are gone. Log back in if needed.
+
+---
+
+#### OPTION C — Fully uninstall VN Video Editor
+
+If you no longer use the app at all, remove everything in 3 steps:
+
+**Step 1 — Delete the app:**
+```bash
+rm -rf /Applications/VN.app
+```
+
+**Step 2 — Delete the container:**
+```bash
+rm -rf ~/Library/Containers/maccatalyst.com.frontrow.vlog
+```
+
+**Step 3 — Remove leftover support files:**
+```bash
+rm -rf ~/Library/Application\ Support/*frontrow*
+rm -rf ~/Library/Caches/*frontrow*
+```
+
+🔴 **After this:** VN is completely removed from your Mac. Reinstall from the App Store if you ever need it again.
+
+---
+
+> 💡 **Recommended approach:** Always run **Option A** first. In most cases, clearing just the Caches folder recovers 80–90% of the space without touching your projects.
 
 ---
 
@@ -267,7 +346,8 @@ rm -rf ~/Library/Containers/com.apple.iMovieApp
 | Microsoft Teams | `rm -rf ~/Library/Containers/com.microsoft.teams2` | 0.5–5 GB | ✅ Yes |
 | WhatsApp | `rm -rf ~/Library/Containers/net.whatsapp.WhatsApp` | 1–10 GB | ✅ Yes |
 | UTM Virtual Machines | `rm -rf ~/Library/Containers/com.utmapp.UTM` | 10–100 GB | ✅ Yes |
-| Vlog app | `rm -rf ~/Library/Containers/maccatalyst.com.frontrow.vlog` | 1–20 GB | ✅ Yes |
+| VN app cache only | `rm -rf ~/Library/Containers/maccatalyst.com.frontrow.vlog/Data/Library/Caches/*` | 1–15 GB | No |
+| VN app full wipe | `rm -rf ~/Library/Containers/maccatalyst.com.frontrow.vlog` | 1–20 GB | ✅ Yes |
 
 ---
 
@@ -306,4 +386,5 @@ macOS shows updated storage after a few minutes. Go to **Apple Menu → About Th
 
 ---
 
+*Guide version 1.1 — Works on macOS Ventura 13, Sonoma 14, Sequoia 15*
 *Guide version 1.0 — Works on macOS Ventura 13, Sonoma 14, Sequoia 15*
