@@ -64,7 +64,38 @@ This shows ALL Library subfolders — caches, logs, app support, etc. — sorted
 sudo find / -type f -size +500M 2>/dev/null
 ```
 
-> This will ask for your **Mac password** — type it (you won't see it appear) and press Enter. It may take 1–2 minutes to scan.
+**What each part means — in plain English:**
+
+| Part | What it does |
+|---|---|
+| `sudo` | Runs the command as admin, so it can look inside protected folders |
+| `find /` | Starts searching from the very root of your Mac (everywhere) |
+| `-type f` | Only look for **files** (not folders) |
+| `-size +500M` | Only show files **bigger than 500 MB** |
+| `2>/dev/null` | Hides error messages like "Permission denied" so your screen stays clean |
+
+> 💡 Think of it like: *"Search my entire Mac, as an admin, and show me every file larger than 500 MB — quietly."*
+
+**What you'll see after running it:**
+
+```
+/Users/yourname/Movies/wedding_video_raw.mov         ← 8.2 GB — probably yours, keep it
+/Users/yourname/Downloads/MacOS_Ventura.dmg          ← 6.1 GB — old installer, safe to delete
+/private/var/vm/sleepimage                           ← 8 GB — system file, do NOT delete
+/Users/yourname/Library/Containers/com.utmapp.UTM/...← 12 GB — VM file, delete if not needed
+```
+
+**What to delete vs. keep:**
+
+| Location starts with… | What it is | Safe to delete? |
+|---|---|---|
+| `/Users/yourname/Downloads/` | Files you downloaded | ✅ Yes, if you don't need them |
+| `/Users/yourname/Movies/` | Your video files | ⚠️ Only if you have a backup |
+| `/Users/yourname/Library/Containers/` | App data | ✅ Yes, using the commands in Step 3–4 |
+| `/private/var/` | macOS system files | 🔴 No — leave these alone |
+| `/Library/` (without yourname) | System/app files | 🔴 No — leave these alone |
+
+> ⚠️ **This command takes 1–2 minutes to finish** — the cursor will just sit there. That's normal. Wait for it.
 
 ---
 
